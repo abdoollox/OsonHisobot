@@ -1,262 +1,265 @@
-import React, { useState } from 'react';
-import { 
-  Calendar as CalendarIcon, 
-  User, 
-  Briefcase, 
-  Building2, 
-  CheckCircle2, 
-  XCircle, 
-  MapPin, 
-  List, 
-  Grid,
-  TrendingUp,
-  AlertCircle
-} from 'lucide-react';
-
-const scheduleData = [
-  { date: 1, day: 'Ch', status: 'present', location: 'FTTI+ofis' },
-  { date: 2, day: 'Pa', status: 'present', location: 'FTTI+ofis' },
-  { date: 3, day: 'Ju', status: 'present', location: 'FTTI' },
-  { date: 4, day: 'Sh', status: 'absent', location: null },
-  { date: 5, day: 'Ya', status: 'present', location: 'ofis' },
-  { date: 6, day: 'Du', status: 'present', location: 'ofis' },
-  { date: 7, day: 'Se', status: 'present', location: 'ofis' },
-  { date: 8, day: 'Ch', status: 'present', location: 'ofis' },
-  { date: 9, day: 'Pa', status: 'present', location: 'ofis' },
-  { date: 10, day: 'Ju', status: 'absent', location: null },
-  { date: 11, day: 'Sh', status: 'present', location: 'ofis' },
-  { date: 12, day: 'Ya', status: 'absent', location: null },
-  { date: 13, day: 'Du', status: 'present', location: 'FTTI+ofis' },
-  { date: 14, day: 'Se', status: 'present', location: 'FTTI+ofis' },
-  { date: 15, day: 'Ch', status: 'present', location: 'FTTI+ofis' },
-  { date: 16, day: 'Pa', status: 'present', location: 'FTTI+ofis' },
-  { date: 17, day: 'Ju', status: 'present', location: 'FTTI+ofis' },
-  { date: 18, day: 'Sh', status: 'present', location: 'ofis' },
-  { date: 19, day: 'Ya', status: 'absent', location: null },
-  { date: 20, day: 'Du', status: 'present', location: 'ofis' },
-  { date: 21, day: 'Se', status: 'present', location: 'ofis' },
-  { date: 22, day: 'Ch', status: 'present', location: 'ofis' },
-  { date: 23, day: 'Pa', status: 'present', location: 'ofis' },
-  { date: 24, day: 'Ju', status: 'absent', location: null },
-  { date: 25, day: 'Sh', status: 'present', location: 'ofis' },
-  { date: 26, day: 'Ya', status: 'present', location: 'ofis' },
-  { date: 27, day: 'Du', status: 'present', location: 'ofis' },
-  { date: 28, day: 'Se', status: 'present', location: 'ofis' },
-  { date: 29, day: 'Ch', status: 'present', location: 'ofis' },
-  { date: 30, day: 'Pa', status: 'present', location: 'ofis' }
-];
-
-const weekDays = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
-// Aprel 1-sana Chorshanba kuniga to'g'ri kelgani uchun (Du va Se bo'sh)
-const emptyDaysStart = 2; 
-
-export default function App() {
-  const [view, setView] = useState('calendar'); // 'calendar' or 'list'
-
-  const getLocationBadge = (location) => {
-    switch(location) {
-      case 'FTTI+ofis':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200"><MapPin size={12}/> FTTI + Ofis</span>;
-      case 'FTTI':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200"><MapPin size={12}/> FTTI</span>;
-      case 'ofis':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200"><Building2 size={12}/> Ofis</span>;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-5xl mx-auto space-y-6">
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ish Grafigi - Oson Apteka</title>
+    <!-- Tailwind CSS (Dizayn uchun) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (Ikonkalar uchun) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto space-y-6">
         
-        {/* Header Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
-            <h1 className="text-3xl font-bold tracking-tight">Ish Grafigi Hisoboti</h1>
-            <p className="mt-2 text-blue-100 flex items-center gap-2">
-              <CalendarIcon size={18} /> Aprel Oyi (Oson Apteka)
-            </p>
-          </div>
-          
-          <div className="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                <User size={24} />
-              </div>
-              <div>
-                <p className="text-sm text-slate-500 font-medium">Xodim</p>
-                <p className="text-lg font-semibold text-slate-900">Abdulloh Karimberdiyev</p>
-              </div>
+        <!-- Header qismi -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-8 text-white">
+                <h1 class="text-3xl font-bold tracking-tight">Ish Grafigi Hisoboti</h1>
+                <p class="mt-2 text-blue-100 flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-5 h-5"></i> Aprel Oyi (Oson Apteka)
+                </p>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                <Briefcase size={24} />
-              </div>
-              <div>
-                <p className="text-sm text-slate-500 font-medium">Lavozim</p>
-                <p className="text-lg font-semibold text-slate-900">PM Assistent</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-600 mb-3">
-              <CalendarIcon size={20} />
-            </div>
-            <p className="text-2xl font-bold text-slate-900">30</p>
-            <p className="text-sm text-slate-500 font-medium mt-1">Umumiy kunlar</p>
-          </div>
-          
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
-            <div className="p-2 bg-blue-100 rounded-lg text-blue-600 mb-3">
-              <TrendingUp size={20} />
-            </div>
-            <p className="text-2xl font-bold text-slate-900">26</p>
-            <p className="text-sm text-slate-500 font-medium mt-1">Ish kunlari rejasi</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
-            <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600 mb-3">
-              <CheckCircle2 size={20} />
-            </div>
-            <p className="text-2xl font-bold text-emerald-600">25</p>
-            <p className="text-sm text-slate-500 font-medium mt-1">Haqiqiy ishga chiqilgan</p>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
-            <div className="p-2 bg-red-100 rounded-lg text-red-600 mb-3">
-              <AlertCircle size={20} />
-            </div>
-            <p className="text-2xl font-bold text-red-600">5</p>
-            <p className="text-sm text-slate-500 font-medium mt-1">Ishga chiqilmagan</p>
-          </div>
-        </div>
-
-        {/* Main Content Area */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
-            <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-              Batafsil Hisobot
-            </h2>
-            <div className="flex bg-slate-200/80 rounded-lg p-1">
-              <button 
-                onClick={() => setView('calendar')}
-                className={`p-1.5 rounded-md flex items-center transition-all ${view === 'calendar' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                title="Taqvim ko'rinishi"
-              >
-                <Grid size={18} />
-              </button>
-              <button 
-                onClick={() => setView('list')}
-                className={`p-1.5 rounded-md flex items-center transition-all ${view === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                title="Ro'yxat ko'rinishi"
-              >
-                <List size={18} />
-              </button>
-            </div>
-          </div>
-
-          <div className="p-6">
-            {view === 'calendar' ? (
-              <div className="overflow-x-auto">
-                <div className="min-w-[700px]">
-                  {/* Calendar Header */}
-                  <div className="grid grid-cols-7 gap-4 mb-4">
-                    {weekDays.map(day => (
-                      <div key={day} className={`text-center font-semibold text-sm ${day === 'Ya' ? 'text-red-500' : 'text-slate-500'}`}>
-                        {day}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-4">
-                    {/* Empty starting blocks */}
-                    {Array.from({ length: emptyDaysStart }).map((_, i) => (
-                      <div key={`empty-${i}`} className="min-h-[100px] rounded-xl bg-slate-50/50 border border-slate-100 border-dashed"></div>
-                    ))}
-                    
-                    {/* Days */}
-                    {scheduleData.map((data) => (
-                      <div 
-                        key={data.date} 
-                        className={`min-h-[100px] p-3 rounded-xl border transition-all duration-200 hover:shadow-md flex flex-col
-                          ${data.status === 'present' 
-                            ? 'bg-white border-emerald-100 hover:border-emerald-300' 
-                            : 'bg-red-50/30 border-red-100 hover:border-red-300'}`}
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <span className={`text-lg font-bold ${data.status === 'present' ? 'text-slate-700' : 'text-red-600'}`}>
-                            {data.date}
-                          </span>
-                          {data.status === 'present' ? (
-                            <CheckCircle2 size={18} className="text-emerald-500" />
-                          ) : (
-                            <XCircle size={18} className="text-red-500" />
-                          )}
-                        </div>
-                        <div className="mt-auto">
-                          {data.location ? getLocationBadge(data.location) : (
-                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-100 text-red-700">
-                              Dam olish
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* List View */
-              <div className="space-y-3">
-                {scheduleData.map((data) => (
-                  <div 
-                    key={data.date} 
-                    className={`flex items-center justify-between p-4 rounded-xl border ${data.status === 'present' ? 'bg-white border-slate-200' : 'bg-red-50/50 border-red-100'}`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 flex items-center justify-center rounded-lg font-bold text-lg
-                        ${data.status === 'present' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                        {data.date < 10 ? `0${data.date}` : data.date}
-                      </div>
-                      <div>
-                        <p className="font-medium text-slate-900">{data.date}-Aprel, {
-                          data.day === 'Du' ? 'Dushanba' :
-                          data.day === 'Se' ? 'Seshanba' :
-                          data.day === 'Ch' ? 'Chorshanba' :
-                          data.day === 'Pa' ? 'Payshanba' :
-                          data.day === 'Ju' ? 'Juma' :
-                          data.day === 'Sh' ? 'Shanba' : 'Yakshanba'
-                        }</p>
-                        <div className="mt-1 flex items-center gap-2">
-                          {data.status === 'present' ? (
-                            <span className="flex items-center gap-1 text-sm text-emerald-600 font-medium">
-                              <CheckCircle2 size={14} /> Ishga chiqilgan
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-1 text-sm text-red-600 font-medium">
-                              <XCircle size={14} /> Ishga chiqilmagan
-                            </span>
-                          )}
-                        </div>
-                      </div>
+            
+            <div class="px-6 py-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                        <i data-lucide="user" class="w-6 h-6"></i>
                     </div>
                     <div>
-                       {data.location && getLocationBadge(data.location)}
+                        <p class="text-sm text-slate-500 font-medium">Xodim</p>
+                        <p class="text-lg font-semibold text-slate-900">Abdulloh Karimberdiyev</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                        <i data-lucide="briefcase" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500 font-medium">Lavozim</p>
+                        <p class="text-lg font-semibold text-slate-900">PM Assistent</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-      </div>
+        <!-- Statistika kartalari -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
+                <div class="p-2 bg-slate-100 rounded-lg text-slate-600 mb-3">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                </div>
+                <p class="text-2xl font-bold text-slate-900">30</p>
+                <p class="text-sm text-slate-500 font-medium mt-1">Umumiy kunlar</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
+                <div class="p-2 bg-blue-100 rounded-lg text-blue-600 mb-3">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+                <p class="text-2xl font-bold text-slate-900">26</p>
+                <p class="text-sm text-slate-500 font-medium mt-1">Ish kunlari rejasi</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
+                <div class="p-2 bg-emerald-100 rounded-lg text-emerald-600 mb-3">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                </div>
+                <p class="text-2xl font-bold text-emerald-600">25</p>
+                <p class="text-sm text-slate-500 font-medium mt-1">Haqiqiy ishga chiqilgan</p>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-start">
+                <div class="p-2 bg-red-100 rounded-lg text-red-600 mb-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                </div>
+                <p class="text-2xl font-bold text-red-600">5</p>
+                <p class="text-sm text-slate-500 font-medium mt-1">Ishga chiqilmagan</p>
+            </div>
+        </div>
+
+        <!-- Asosiy kontent qismi -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+                <h2 class="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                    Batafsil Hisobot
+                </h2>
+                <!-- View almashtirish tugmalari -->
+                <div class="flex bg-slate-200/80 rounded-lg p-1">
+                    <button id="btn-calendar" onclick="switchView('calendar')" class="p-1.5 rounded-md flex items-center transition-all bg-white text-blue-600 shadow-sm" title="Taqvim ko'rinishi">
+                        <i data-lucide="grid" class="w-4 h-4"></i>
+                    </button>
+                    <button id="btn-list" onclick="switchView('list')" class="p-1.5 rounded-md flex items-center transition-all text-slate-500 hover:text-slate-700" title="Ro'yxat ko'rinishi">
+                        <i data-lucide="list" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Taqvim ko'rinishi -->
+                <div id="calendar-view" class="overflow-x-auto block">
+                    <div class="min-w-[700px]">
+                        <div class="grid grid-cols-7 gap-4 mb-4" id="calendar-header">
+                            <!-- JS orqali to'ldiriladi -->
+                        </div>
+                        <div class="grid grid-cols-7 gap-4" id="calendar-grid">
+                            <!-- JS orqali to'ldiriladi -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ro'yxat ko'rinishi -->
+                <div id="list-view" class="space-y-3 hidden">
+                    <!-- JS orqali to'ldiriladi -->
+                </div>
+            </div>
+        </div>
+
     </div>
-  );
-}
+
+    <!-- Mantiqiy qism (JavaScript) -->
+    <script>
+        const scheduleData = [
+            { date: 1, day: 'Ch', status: 'present', location: 'FTTI+ofis' },
+            { date: 2, day: 'Pa', status: 'present', location: 'FTTI+ofis' },
+            { date: 3, day: 'Ju', status: 'present', location: 'FTTI' },
+            { date: 4, day: 'Sh', status: 'absent', location: null },
+            { date: 5, day: 'Ya', status: 'present', location: 'ofis' },
+            { date: 6, day: 'Du', status: 'present', location: 'ofis' },
+            { date: 7, day: 'Se', status: 'present', location: 'ofis' },
+            { date: 8, day: 'Ch', status: 'present', location: 'ofis' },
+            { date: 9, day: 'Pa', status: 'present', location: 'ofis' },
+            { date: 10, day: 'Ju', status: 'absent', location: null },
+            { date: 11, day: 'Sh', status: 'present', location: 'ofis' },
+            { date: 12, day: 'Ya', status: 'absent', location: null },
+            { date: 13, day: 'Du', status: 'present', location: 'FTTI+ofis' },
+            { date: 14, day: 'Se', status: 'present', location: 'FTTI+ofis' },
+            { date: 15, day: 'Ch', status: 'present', location: 'FTTI+ofis' },
+            { date: 16, day: 'Pa', status: 'present', location: 'FTTI+ofis' },
+            { date: 17, day: 'Ju', status: 'present', location: 'FTTI+ofis' },
+            { date: 18, day: 'Sh', status: 'present', location: 'ofis' },
+            { date: 19, day: 'Ya', status: 'absent', location: null },
+            { date: 20, day: 'Du', status: 'present', location: 'ofis' },
+            { date: 21, day: 'Se', status: 'present', location: 'ofis' },
+            { date: 22, day: 'Ch', status: 'present', location: 'ofis' },
+            { date: 23, day: 'Pa', status: 'present', location: 'ofis' },
+            { date: 24, day: 'Ju', status: 'absent', location: null },
+            { date: 25, day: 'Sh', status: 'present', location: 'ofis' },
+            { date: 26, day: 'Ya', status: 'present', location: 'ofis' },
+            { date: 27, day: 'Du', status: 'present', location: 'ofis' },
+            { date: 28, day: 'Se', status: 'present', location: 'ofis' },
+            { date: 29, day: 'Ch', status: 'present', location: 'ofis' },
+            { date: 30, day: 'Pa', status: 'present', location: 'ofis' }
+        ];
+
+        const weekDays = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
+        const fullDayNames = { 'Du': 'Dushanba', 'Se': 'Seshanba', 'Ch': 'Chorshanba', 'Pa': 'Payshanba', 'Ju': 'Juma', 'Sh': 'Shanba', 'Ya': 'Yakshanba' };
+        const emptyDaysStart = 2; // Chorshanbadan boshlangani uchun 2 ta bo'sh katak
+
+        function getLocationBadge(location) {
+            if (location === 'FTTI+ofis') {
+                return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200"><i data-lucide="map-pin" class="w-3 h-3"></i> FTTI + Ofis</span>`;
+            } else if (location === 'FTTI') {
+                return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-700 border border-purple-200"><i data-lucide="map-pin" class="w-3 h-3"></i> FTTI</span>`;
+            } else if (location === 'ofis') {
+                return `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200"><i data-lucide="building-2" class="w-3 h-3"></i> Ofis</span>`;
+            }
+            return `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-100 text-red-700">Dam olish</span>`;
+        }
+
+        function initApp() {
+            // Haftaning kunlari sarlavhasini yaratish
+            const calHeader = document.getElementById('calendar-header');
+            calHeader.innerHTML = weekDays.map(day => 
+                `<div class="text-center font-semibold text-sm ${day === 'Ya' ? 'text-red-500' : 'text-slate-500'}">${day}</div>`
+            ).join('');
+
+            // Taqvim katakchalarini yaratish
+            const calGrid = document.getElementById('calendar-grid');
+            let gridHTML = '';
+            
+            for (let i = 0; i < emptyDaysStart; i++) {
+                gridHTML += `<div class="min-h-[100px] rounded-xl bg-slate-50/50 border border-slate-100 border-dashed"></div>`;
+            }
+
+            scheduleData.forEach(data => {
+                const isPresent = data.status === 'present';
+                gridHTML += `
+                    <div class="min-h-[100px] p-3 rounded-xl border transition-all duration-200 hover:shadow-md flex flex-col ${isPresent ? 'bg-white border-emerald-100 hover:border-emerald-300' : 'bg-red-50/30 border-red-100 hover:border-red-300'}">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-lg font-bold ${isPresent ? 'text-slate-700' : 'text-red-600'}">${data.date}</span>
+                            <i data-lucide="${isPresent ? 'check-circle-2' : 'x-circle'}" class="w-5 h-5 ${isPresent ? 'text-emerald-500' : 'text-red-500'}"></i>
+                        </div>
+                        <div class="mt-auto">
+                            ${getLocationBadge(data.location)}
+                        </div>
+                    </div>
+                `;
+            });
+            calGrid.innerHTML = gridHTML;
+
+            // Ro'yxat ko'rinishini yaratish
+            const listView = document.getElementById('list-view');
+            let listHTML = '';
+            
+            scheduleData.forEach(data => {
+                const isPresent = data.status === 'present';
+                const formattedDate = data.date < 10 ? `0${data.date}` : data.date;
+                listHTML += `
+                    <div class="flex items-center justify-between p-4 rounded-xl border ${isPresent ? 'bg-white border-slate-200' : 'bg-red-50/50 border-red-100'}">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center rounded-lg font-bold text-lg ${isPresent ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                                ${formattedDate}
+                            </div>
+                            <div>
+                                <p class="font-medium text-slate-900">${formattedDate}-Aprel, ${fullDayNames[data.day]}</p>
+                                <div class="mt-1 flex items-center gap-2">
+                                    <span class="flex items-center gap-1 text-sm font-medium ${isPresent ? 'text-emerald-600' : 'text-red-600'}">
+                                        <i data-lucide="${isPresent ? 'check-circle-2' : 'x-circle'}" class="w-4 h-4"></i> 
+                                        ${isPresent ? 'Ishga chiqilgan' : 'Ishga chiqilmagan'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            ${data.location ? getLocationBadge(data.location) : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            listView.innerHTML = listHTML;
+
+            // Ikonkalarni faollashtirish
+            lucide.createIcons();
+        }
+
+        // Ko'rinishni almashtirish funksiyasi (Calendar / List)
+        function switchView(view) {
+            const calView = document.getElementById('calendar-view');
+            const listView = document.getElementById('list-view');
+            const btnCal = document.getElementById('btn-calendar');
+            const btnList = document.getElementById('btn-list');
+
+            const activeClass = "p-1.5 rounded-md flex items-center transition-all bg-white text-blue-600 shadow-sm".split(" ");
+            const inactiveClass = "p-1.5 rounded-md flex items-center transition-all text-slate-500 hover:text-slate-700".split(" ");
+
+            if (view === 'calendar') {
+                calView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                
+                btnCal.className = activeClass.join(" ");
+                btnList.className = inactiveClass.join(" ");
+            } else {
+                calView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                
+                btnList.className = activeClass.join(" ");
+                btnCal.className = inactiveClass.join(" ");
+            }
+        }
+
+        // Dastur yuklanganda ishga tushirish
+        document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+</body>
+</html>
